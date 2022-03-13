@@ -1,663 +1,594 @@
-<!DOCTYPE html> 
-<html> 
-<head> <title>Advanced Linux Sound Architecture (ALSA)</title> 
-<meta charset="UTF-8" /> 
-<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)" /> 
+<?xml version="1.0" encoding="iso-8859-1" ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" 
+"http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd" > 
+<html xmlns="http://www.w3.org/1999/xhtml"  
+> 
+<head><title>Advanced Linux Sound Architecture &#x0028;ALSA&#x0029;</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> 
+<meta name="generator" content="TeX4ht (https://tug.org/tex4ht/)" /> 
+<meta name="originator" content="TeX4ht (https://tug.org/tex4ht/)" /> 
+<!-- xhtml,mathml,html --> 
+<meta name="src" content="index.tex" /> 
 <link rel="stylesheet" type="text/css" href="index.css" /> 
-<script type="text/javascript" 
-src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" 
-></script> 
-<style type="text/css"> 
-.MathJax_MathML {text-indent: 0;} 
-</style> 
 </head><body 
 >
    <div class="maketitle">
                                                                   
 
                                                                   
+                                                                  
 
-<h2 class="titleHead">Advanced Linux Sound Architecture (ALSA)</h2>
+                                                                  
+
+<h2 class="titleHead">Advanced Linux Sound Architecture &#x0028;ALSA&#x0029;</h2>
  <div class="author" ><span 
 class="ecrm-1200">Vicente Gonz</span><span 
-class="ecrm-1200">á</span><span 
+class="ecrm-1200">&#x00E1;</span><span 
 class="ecrm-1200">lez Ruiz</span></div><br />
 <div class="date" ><span 
-class="ecrm-1200">May 30, 2018</span></div>
-                                                                  
-
-                                                                  
+class="ecrm-1200">March 13, 2022</span></div>
    </div>
+   <hr class="figure" /><div class="figure" 
+>
                                                                   
 
                                                                   
-   <h2 class="likechapterHead"><a 
- id="x1-1000"></a>Contents</h2> <div class="tableofcontents">
-   <span class="chapterToc" >1 <a 
-href="#x1-20001" id="QQ2-1-2">Theory</a></span>
-<br />    <span class="sectionToc" >1.1 <a 
-href="#x1-30001.1" id="QQ2-1-3">What is ALSA?</a></span>
-<br />    <span class="sectionToc" >1.2 <a 
-href="#x1-40001.2" id="QQ2-1-4">Installation</a></span>
-<br />    <span class="sectionToc" >1.3 <a 
-href="#x1-50001.3" id="QQ2-1-5">Recognized audio hardware</a></span>
-<br />    <span class="sectionToc" >1.4 <a 
-href="#x1-60001.4" id="QQ2-1-6">Playback devices</a></span>
-<br />    <span class="sectionToc" >1.5 <a 
-href="#x1-70001.5" id="QQ2-1-7">PCM DAC (playback) device names</a></span>
-<br />    <span class="sectionToc" >1.6 <a 
-href="#x1-80001.6" id="QQ2-1-8">Capture devices</a></span>
-<br />    <span class="sectionToc" >1.7 <a 
-href="#x1-90001.7" id="QQ2-1-9">PCM ADC (capture) device names</a></span>
-<br />    <span class="sectionToc" >1.8 <a 
-href="#x1-100001.8" id="QQ2-1-10">Cards, devices, and subdevices</a></span>
-<br />    <span class="sectionToc" >1.9 <a 
-href="#x1-110001.9" id="QQ2-1-11">(Very basic) Conﬁguration</a></span>
-<br />    <span class="sectionToc" >1.10 <a 
-href="#x1-120001.10" id="QQ2-1-12">Permissions</a></span>
-<br />    <span class="sectionToc" >1.11 <a 
-href="#x1-130001.11" id="QQ2-1-13"><span 
-class="ectt-1000">alsa</span>: the deamon handler</a></span>
-<br />    <span class="sectionToc" >1.12 <a 
-href="#x1-140001.12" id="QQ2-1-14"><span 
-class="ectt-1000">amixer</span>: a command-line mixer</a></span>
-<br />    <span class="sectionToc" >1.13 <a 
-href="#x1-150001.13" id="QQ2-1-15"><span 
-class="ectt-1000">alsamixer</span>: a ncursed-based mixer</a></span>
-<br />    <span class="sectionToc" >1.14 <a 
-href="#x1-160001.14" id="QQ2-1-16"><span 
-class="ectt-1000">speacker-test</span>: a command-line pink noise generator</a></span>
-<br />    <span class="sectionToc" >1.15 <a 
-href="#x1-170001.15" id="QQ2-1-17">Sampling parameters</a></span>
-<br />    <span class="sectionToc" >1.16 <a 
-href="#x1-180001.16" id="QQ2-1-18">Capture limits</a></span>
-<br />    <span class="sectionToc" >1.17 <a 
-href="#x1-190001.17" id="QQ2-1-19">Capture and playback PCM data (basic example)</a></span>
-<br />   <span class="chapterToc" >2 <a 
-href="#x1-200002" id="QQ2-1-20">Practice</a></span>
-<br />    <span class="sectionToc" >2.1 <a 
-href="#x1-210002.1" id="QQ2-1-21">Exercise 1: Sample a 8-bit PCM ﬁle</a></span>
-   </div>
                                                                   
 
                                                                   
-   <h2 class="chapterHead"><span class="titlemark">Chapter 1</span><br /><a 
- id="x1-20001"></a>Theory</h2>
-   <h3 class="sectionHead"><span class="titlemark">1.1   </span> <a 
- id="x1-30001.1"></a>What is ALSA?</h3>
-     <ul class="itemize1">
-     <li class="itemize"><a 
-href="http://en.wikipedia.org/wiki/Advanced_Linux_Sound_Architecture" >Advanced Linux Sound Architecture (ALSA)</a> is a software framework and
-     part of the Linux kernel (as a set of modules) that provides an application
-     programming interface (API) for sound card device drivers.
-     </li>
-     <li class="itemize">Possibilities in the Linux audio stack:
-     <!--tex4ht:inline--><div class="tabular"> <table id="TBL-2" class="tabular" 
-cellspacing="0" cellpadding="0" rules="groups" 
-><colgroup id="TBL-2-1g"><col 
-id="TBL-2-1" /></colgroup><tr 
-class="hline"><td><hr /></td></tr><tr  
- style="vertical-align:baseline;" id="TBL-2-1-"><td  style="text-align:center; white-space:nowrap;" id="TBL-2-1-1"  
-class="td11"> <a 
-href="http://www.freedesktop.org/wiki/Software/PulseAudio" >PulseAudio</a> / <a 
-href="http://jackaudio.org" >Jack</a> / <a 
-href="http://gstreamer.freedesktop.org" >GStreamer</a> / <a 
-href="https://www.xine-project.org/home" >Xine</a> / <a 
-href="https://www.libsdl.org" >SDL</a> / <a 
-href="http://phonon.kde.org" >Phonon</a>  </td>
-</tr><tr 
-class="hline"><td><hr /></td></tr><tr  
- style="vertical-align:baseline;" id="TBL-2-2-"><td  style="text-align:center; white-space:nowrap;" id="TBL-2-2-1"  
-class="td11">               <a 
-href="http://www.ffado.org" >FFADO</a> / <a 
-href="http://www.alsa-project.org/main/index.php/Main_Page" >ALSA</a> / <a 
-href="http://www.opensound.com/oss.html" >OSS</a>                        </td>
-</tr><tr 
-class="hline"><td><hr /></td></tr><tr  
- style="vertical-align:baseline;" id="TBL-2-3-"><td  style="text-align:center; white-space:nowrap;" id="TBL-2-3-1"  
-class="td11">                                                  </td></tr></table>
-     </div>
-     </li>
-     <li class="itemize">Original author: <a 
-href="https://internet.perex.cz/~perex/" >Jaroslav Kysela</a>.
-     </li>
-     <li class="itemize">ALSA is released under the GNU General Public License (GPL) and the GNU
-     Lesser General Public License (LGPL).
-     </li>
-     <li class="itemize"><a 
-href="http://alsa-project.org/main/index.php/Matrix:Main" >Supported cards and driver names</a>.</li></ul>
-<!--l. 37--><p class="noindent" >
-</p>
-   <h3 class="sectionHead"><span class="titlemark">1.2   </span> <a 
- id="x1-40001.2"></a>Installation</h3>
-     <ul class="itemize1">
-     <li class="itemize">ALSA is included in the default in most Linux kernels as a set of modules,
-     so manual installation is not necessary.
-     </li>
-     <li class="itemize"><a 
-href="http://en.wikipedia.org/wiki/Udev" ><span 
-class="ectt-1000">Udev</span></a> will  automatically  probe  your  hardware  at  boot,  loading  the
-     corresponding <a 
-href="http://en.wikipedia.org/wiki/Loadable_kernel_module#Linux" >kernel module</a> for your audio card.
-     </li>
-     <li class="itemize">The loaded modules can be displayed with:
-                                                                  
-
-                                                                  
-     <div class="verbatim" id="verbatim-1">
-     $ lsmod | grep &#x2019;^snd&#x2019; | column -t
-      <br />snd_hda_codec_realtek  61438   1
-      <br />snd_hda_intel          52355   6
-      <br />snd_hda_codec          192906  2   snd_hda_codec_realtek,snd_hda_intel
-      <br />snd_hwdep              13602   1   snd_hda_codec
-      <br />snd_pcm                102099  3   snd_hda_codec,snd_hda_intel
-      <br />snd_page_alloc         18710   2   snd_pcm,snd_hda_intel
-      <br />snd_seq_midi           13324   0
-      <br />snd_seq_midi_event     14899   1   snd_seq_midi
-      <br />snd_rawmidi            30144   1   snd_seq_midi
-      <br />snd_seq                61560   2   snd_seq_midi_event,snd_seq_midi
-      <br />snd_seq_device         14497   3   snd_seq,snd_rawmidi,snd_seq_midi
-      <br />snd_timer              29482   2   snd_pcm,snd_seq
-      <br />snd                    69238   21  snd_hda_codec_realtek,snd_hwdep,snd_timer,snd_pcm,snd_seq,snd_rawmidi,snd_hda_codec,snd_hda_intel,snd_seq_device,snd_seq_midi
-</div>
-     <!--l. 63--><p class="nopar" >
-</p>
-     </li></ul>
-<!--l. 84--><p class="noindent" >
-</p>
-   <h3 class="sectionHead"><span class="titlemark">1.3   </span> <a 
- id="x1-50001.3"></a>Recognized audio hardware</h3>
-                                                                  
-
-                                                                  
-   <div class="verbatim" id="verbatim-2">
-$ cat /proc/asound/card*/id
-</div>
-<!--l. 89--><p class="nopar" >
-</p><!--l. 93--><p class="noindent" >
-</p>
-   <h3 class="sectionHead"><span class="titlemark">1.4   </span> <a 
- id="x1-60001.4"></a>Playback devices</h3>
-                                                                  
-
-                                                                  
-   <div class="verbatim" id="verbatim-3">
-$ aplay -l
- <br />**** List of PLAYBACK Hardware Devices ****
- <br />card 0: NVidia [HDA NVidia], device 0: ALC889A Analog [ALC889A Analog]
- <br />  Subdevices: 0/1
- <br />  Subdevice #0: subdevice #0
- <br />card 0: NVidia [HDA NVidia], device 1: ALC889A Digital [ALC889A Digital]
- <br />  Subdevices: 1/1
- <br />  Subdevice #0: subdevice #0
- <br />
- <br /># In this example, there is a sound card named &#x0022;Nvidia&#x0022;
- <br /># which has two playback devices &#x0022;ALC889A Analog&#x0022; and &#x0022;ALC889A Digital&#x0022;.
- <br /># You can extract the sound card names by using:
- <br />
- <br />$ aplay -l | awk -F \: &#x2019;/,/{print $2}&#x2019; | awk &#x2019;{print $1}&#x2019; | uniq
-</div>
-<!--l. 111--><p class="nopar" >
-</p><!--l. 115--><p class="noindent" >
-</p>
-   <h3 class="sectionHead"><span class="titlemark">1.5   </span> <a 
- id="x1-70001.5"></a>PCM DAC (playback) device names</h3>
-                                                                  
-
-                                                                  
-   <div class="verbatim" id="verbatim-4">
-$ aplay -L
- <br />null
- <br />    Discard all samples (playback) or generate zero samples (capture)
- <br />pulse
- <br />    PulseAudio Sound Server
- <br />equal
- <br />plugequal
- <br />default
- <br />    Playback/recording through the PulseAudio sound server
- <br />sysdefault:CARD=NVidia
- <br />    HDA NVidia, ALC889A Analog
- <br />    Default Audio Device
- <br />front:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    Front speakers
- <br />surround40:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    4.0 Surround output to Front and Rear speakers
- <br />surround41:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    4.1 Surround output to Front, Rear and Subwoofer speakers
- <br />surround50:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    5.0 Surround output to Front, Center and Rear speakers
- <br />surround51:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
- <br />surround71:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
- <br />iec958:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Digital
- <br />    IEC958 (S/PDIF) Digital Audio Output
- <br />dmix:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    Direct sample mixing device
- <br />dmix:CARD=NVidia,DEV=1
- <br />    HDA NVidia, ALC889A Digital
- <br />    Direct sample mixing device
- <br />dsnoop:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    Direct sample snooping device
-                                                                  
-
-                                                                  
- <br />dsnoop:CARD=NVidia,DEV=1
- <br />    HDA NVidia, ALC889A Digital
- <br />    Direct sample snooping device
- <br />hw:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    Direct hardware device without any conversions
- <br />hw:CARD=NVidia,DEV=1
- <br />    HDA NVidia, ALC889A Digital
- <br />    Direct hardware device without any conversions
- <br />plughw:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    Hardware device with all software conversions
- <br />plughw:CARD=NVidia,DEV=1
- <br />    HDA NVidia, ALC889A Digital
- <br />    Hardware device with all software conversions
-</div>
-<!--l. 176--><p class="nopar" >
-</p><!--l. 180--><p class="noindent" >
-</p>
-   <h3 class="sectionHead"><span class="titlemark">1.6   </span> <a 
- id="x1-80001.6"></a>Capture devices</h3>
-                                                                  
-
-                                                                  
-   <div class="verbatim" id="verbatim-5">
-$ arecord -l
- <br />**** List of CAPTURE Hardware Devices ****
- <br />card 0: NVidia [HDA NVidia], device 0: ALC889A Analog [ALC889A Analog] # Line in
- <br />  Subdevices: 1/1
- <br />  Subdevice #0: subdevice #0
- <br />card 0: NVidia [HDA NVidia], device 1: ALC889A Digital [ALC889A Digital] # SPDIF
- <br />  Subdevices: 1/1
- <br />  Subdevice #0: subdevice #0
- <br />card 0: NVidia [HDA NVidia], device 2: ALC889A Alt Analog [ALC889A Alt Analog] # Mic
- <br />  Subdevices: 2/2
- <br />  Subdevice #0: subdevice #0
- <br />  Subdevice #1: subdevice #1
-</div>
-<!--l. 196--><p class="nopar" >
-</p><!--l. 200--><p class="noindent" >
-</p>
-   <h3 class="sectionHead"><span class="titlemark">1.7   </span> <a 
- id="x1-90001.7"></a>PCM ADC (capture) device names</h3>
-                                                                  
-
-                                                                  
-   <div class="verbatim" id="verbatim-6">
-$ arecord -L
- <br />null
- <br />    Discard all samples (playback) or generate zero samples (capture)
- <br />pulse
- <br />    PulseAudio Sound Server
- <br />equal
- <br />plugequal
- <br />default
- <br />    Playback/recording through the PulseAudio sound server
- <br />sysdefault:CARD=NVidia
- <br />    HDA NVidia, ALC889A Analog
- <br />    Default Audio Device
- <br />front:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    Front speakers
- <br />surround40:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    4.0 Surround output to Front and Rear speakers
- <br />surround41:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    4.1 Surround output to Front, Rear and Subwoofer speakers
- <br />surround50:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    5.0 Surround output to Front, Center and Rear speakers
- <br />surround51:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
- <br />surround71:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
- <br />iec958:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Digital
- <br />    IEC958 (S/PDIF) Digital Audio Output
- <br />dmix:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    Direct sample mixing device
- <br />dmix:CARD=NVidia,DEV=1
- <br />    HDA NVidia, ALC889A Digital
- <br />    Direct sample mixing device
- <br />dmix:CARD=NVidia,DEV=2
- <br />    HDA NVidia, ALC889A Alt Analog
- <br />    Direct sample mixing device
-                                                                  
-
-                                                                  
- <br />dsnoop:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    Direct sample snooping device
- <br />dsnoop:CARD=NVidia,DEV=1
- <br />    HDA NVidia, ALC889A Digital
- <br />    Direct sample snooping device
- <br />dsnoop:CARD=NVidia,DEV=2
- <br />    HDA NVidia, ALC889A Alt Analog
- <br />    Direct sample snooping device
- <br />hw:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    Direct hardware device without any conversions
- <br />hw:CARD=NVidia,DEV=1
- <br />    HDA NVidia, ALC889A Digital
- <br />    Direct hardware device without any conversions
- <br />hw:CARD=NVidia,DEV=2
- <br />    HDA NVidia, ALC889A Alt Analog
- <br />    Direct hardware device without any conversions
- <br />plughw:CARD=NVidia,DEV=0
- <br />    HDA NVidia, ALC889A Analog
- <br />    Hardware device with all software conversions
- <br />plughw:CARD=NVidia,DEV=1
- <br />    HDA NVidia, ALC889A Digital
- <br />    Hardware device with all software conversions
- <br />plughw:CARD=NVidia,DEV=2
- <br />    HDA NVidia, ALC889A Alt Analog
- <br />    Hardware device with all software conversions
-</div>
-<!--l. 273--><p class="nopar" >
-</p><!--l. 279--><p class="noindent" >
-</p>
-   <h3 class="sectionHead"><span class="titlemark">1.8   </span> <a 
- id="x1-100001.8"></a>Cards, devices, and subdevices</h3>
-     <ul class="itemize1">
-     <li class="itemize">A system can host several sound cards.
-     </li>
-     <li class="itemize">Sound cards presents one or more devices, which are divided into one or
-     more subdevices.
-     </li>
-     <li class="itemize">ALSA works with logical device names, which can be hardware (real)
-     devices or plugins.
-                                                                  
-
-                                                                  
-     </li>
-     <li class="itemize">Hardware devices use the format <span 
-class="ectt-1000">hw:i,j</span>, where <span 
-class="ectt-1000">i </span>is the card number and
-     <span 
-class="ectt-1000">j </span>is the device on that card. The ﬁrst device is <span 
-class="ectt-1000">hw:0.0</span>.
-     </li>
-     <li class="itemize">Plugins are refered by <span 
-class="ectt-1000">plughw </span>and provides features such as sampling rate
-     conversion, channel dupplication and sample value conversion.
-     </li></ul>
-<!--l. 339--><p class="noindent" >
-</p>
-   <h3 class="sectionHead"><span class="titlemark">1.9   </span> <a 
- id="x1-110001.9"></a>(Very basic) Conﬁguration</h3>
-     <ul class="itemize1">
-     <li class="itemize">If you have more than one sound card and want to use one of them by
-     default:
-                                                                  
-
-                                                                  
-     <div class="verbatim" id="verbatim-7">
-     cat &#x003C;&#x003C; EOF &#x003E; ~/.asoundrc
-      <br /># DAC
-      <br />pcm.!default {
-      <br />    type hw
-      <br />    card Nvidia
-      <br />}
-      <br />
-      <br /># Mixer
-      <br />ctl.!default {
-      <br />    type hw
-      <br />    card Nvidia
-      <br />}
-      <br />EOF
-</div>
-     <!--l. 359--><p class="nopar" >
-     </p></li>
-     <li class="itemize">Alternatively, this can be written into (with superuser priviledges):
-                                                                  
-
-                                                                  
-     <div class="verbatim" id="verbatim-8">
-     /etc/asound.conf
-</div>
-     <!--l. 363--><p class="nopar" ></p></li></ul>
-<!--l. 368--><p class="noindent" >
-</p>
-   <h3 class="sectionHead"><span class="titlemark">1.10   </span> <a 
- id="x1-120001.10"></a>Permissions</h3>
-     <ul class="itemize1">
-     <li class="itemize">Users with a local login (at a virtual terminal or a display manager) have
-     permission to play audio and change mixer levels. To allow this for a
-     remote login, the user has to be added to the audio group.
-     </li>
-     <li class="itemize">Membership  in  the  audio  group  also  allows  direct  access  to  devices.
-     Therefore, adding a user to the audio group is not recommended, because
-     the audio hardware can not be used for two or more users at the same
-     time.</li></ul>
-<!--l. 384--><p class="noindent" >
-</p>
-   <h3 class="sectionHead"><span class="titlemark">1.11   </span> <a 
- id="x1-130001.11"></a><span 
-class="ectt-1000">alsa</span>: the deamon handler</h3>
-     <ul class="itemize1">
-     <li class="itemize">It should be installed by default. Location:
-                                                                  
-
-                                                                  
-     <div class="verbatim" id="verbatim-9">
-     $ which alsa
-      <br />/sbin/alsa
-</div>
-     <!--l. 392--><p class="nopar" >
-     </p></li>
-     <li class="itemize">Allows to disable, stops, reload, etc. the ALSA driver.
-                                                                  
-
-                                                                  
-     <div class="verbatim" id="verbatim-10">
-     $ alsa -h
-      <br />Usage: /sbin/alsa {unload|reload|force-unload|force-reload|suspend|resume}
-</div>
-     <!--l. 397--><p class="nopar" ></p></li></ul>
-<!--l. 402--><p class="noindent" >
-</p>
-   <h3 class="sectionHead"><span class="titlemark">1.12   </span> <a 
- id="x1-140001.12"></a><span 
-class="ectt-1000">amixer</span>: a command-line mixer</h3>
-     <ul class="itemize1">
-     <li class="itemize">Location:
-                                                                  
-
-                                                                  
-     <div class="verbatim" id="verbatim-11">
-     $ which amixer
-      <br />/usr/bin/amixer
-</div>
-     <!--l. 411--><p class="nopar" >
-     </p></li>
-     <li class="itemize">Mixer controls:
-                                                                  
-
-                                                                  
-     <div class="verbatim" id="verbatim-12">
-     $ amixer | grep control # Also works: &#x0022;amixer scontrols&#x0022;
-      <br />Simple mixer control &#x2019;Master&#x2019;,0               &#x003C;- Master out volume control
-      <br />Simple mixer control &#x2019;Headphone&#x2019;,0            &#x003C;- Stereo headphone out volume control
-      <br />Simple mixer control &#x2019;PCM&#x2019;,0                  &#x003C;- Stereo DAC out volume control
-      <br />Simple mixer control &#x2019;Front&#x2019;,0                &#x003C;- Stereo front (5.1) out output volume
-      <br />Simple mixer control &#x2019;Surround&#x2019;,0             &#x003C;- Stereo rear out volume control
-      <br />Simple mixer control &#x2019;Center&#x2019;,0               &#x003C;- Mono center out volume control
-      <br />Simple mixer control &#x2019;LFE&#x2019;,0                  &#x003C;- Mono subwoofer out volume control
-      <br />Simple mixer control &#x2019;Line&#x2019;,0                 &#x003C;- Stereo ADC line in volume control
-      <br />Simple mixer control &#x2019;Line Boost&#x2019;,0           &#x003C;- 20dB amplified line in
-      <br />Simple mixer control &#x2019;Mic&#x2019;,0                  &#x003C;- Stereo ADC microphone input line control
-      <br />Simple mixer control &#x2019;Mic Boost&#x2019;,0            &#x003C;- 20dB amplified Mic
-      <br />Simple mixer control &#x2019;IEC958&#x2019;,0               &#x003C;- Analog S/PDIF out volume control
-      <br />Simple mixer control &#x2019;IEC958 Default PCM&#x2019;,0   &#x003C;- Digital S/PDIF out volume control
-      <br />Simple mixer control &#x2019;Beep&#x2019;,0                 &#x003C;- PC &#x0022;speaker&#x0022; out volume control
-      <br />Simple mixer control &#x2019;Capture&#x2019;,0              &#x003C;- Line in gain
-      <br />Simple mixer control &#x2019;Capture&#x2019;,1              &#x003C;- S/PDIF gain
-      <br />Simple mixer control &#x2019;Capture&#x2019;,2              &#x003C;- Mic gain
-      <br />Simple mixer control &#x2019;Auto-Mute Mode&#x2019;,0       &#x003C;- Headphone jack inserted, speaker off
-      <br />Simple mixer control &#x2019;Input Source&#x2019;,0         &#x003C;- Line | IEC958 | Mic (you can select one)
-      <br />Simple mixer control &#x2019;Input Source&#x2019;,1         &#x003C;- :
-      <br />Simple mixer control &#x2019;Input Source&#x2019;,2         &#x003C;- :
-</div>
-     <!--l. 437--><p class="nopar" ></p></li></ul>
-<!--l. 442--><p class="noindent" >
-</p>
-   <h3 class="sectionHead"><span class="titlemark">1.13   </span> <a 
- id="x1-150001.13"></a><span 
-class="ectt-1000">alsamixer</span>: a ncursed-based mixer</h3>
 <div class="center" 
 >
-<!--l. 445--><p class="noindent" >
-
-</p><!--l. 446--><p class="noindent" ><img 
-src="data/alsamixer.png" alt="PIC"  
- /></p></div>
-<!--l. 453--><p class="noindent" >
+<!--l. 6--><p class="noindent" >
 </p>
-   <h3 class="sectionHead"><span class="titlemark">1.14   </span> <a 
- id="x1-160001.14"></a><span 
-class="ectt-1000">speacker-test</span>: a command-line <a 
-href="http://en.wikipedia.org/wiki/Pink_noise" >pink noise</a> generator</h3>
+<div class="tabular"> <table id="TBL-2" class="tabular" 
+rules="groups" 
+><colgroup id="TBL-2-1g"><col 
+id="TBL-2-1" /></colgroup><colgroup id="TBL-2-2g"><col 
+id="TBL-2-2" /></colgroup><tr 
+class="hline"><td><hr /></td><td><hr /></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-1-"><td colspan="2" style="text-align:center; white-space:nowrap;" id="TBL-2-1-1"  
+class="td11"> <div class="multicolumn"  style="text-align:center; white-space:nowrap;"><a 
+href="https://en.wikipedia.org/wiki/List_of_Linux_audio_software" >Linux Audio Applications</a></div>
+</td></tr><tr 
+class="hline"><td><hr /></td><td><hr /></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-2-"><td  style="text-align:center; white-space:nowrap;" id="TBL-2-2-1"  
+class="td11"> <a 
+href="https://jackaudio.org/" >JACK</a>  </td><td  style="text-align:center; white-space:nowrap;" id="TBL-2-2-2"  
+class="td11">  <a 
+href="https://www.freedesktop.org/wiki/Software/PulseAudio/" >Pulse Audio</a>    </td>
+</tr><tr 
+class="hline"><td><hr /></td><td><hr /></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-3-"><td colspan="2" style="text-align:center; white-space:nowrap;" id="TBL-2-3-1"  
+class="td11">          <div class="multicolumn"  style="text-align:center; white-space:nowrap;"><a 
+href="https://www.alsa-project.org" >ALSA</a></div>
+</td></tr><tr 
+class="hline"><td><hr /></td><td><hr /></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-4-"><td colspan="2" style="text-align:center; white-space:nowrap;" id="TBL-2-4-1"  
+class="td11">     <div class="multicolumn"  style="text-align:center; white-space:nowrap;"><a 
+href="https://www.alsa-project.org/wiki/Matrix:Main" >Sound hardware</a></div>
+</td></tr><tr 
+class="hline"><td><hr /></td><td><hr /></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-5-"><td  style="text-align:center; white-space:nowrap;" id="TBL-2-5-1"  
+class="td11">       </td></tr></table></div></div>
+<a 
+ id="x1-2r1"></a>
+<a 
+ id="x1-3"></a>
+<br />                                                                  <div class="caption" 
+><span class="id">
+Figure&#x00A0;1: </span><span  
+class="content">The Linux Audio &#x0028;problably partial&#x0029; Stack.
+</span></div><!--tex4ht:label?: x1-2r -->
                                                                   
 
                                                                   
-   <div class="verbatim" id="verbatim-13">
-$ speaker-test -c 2                  # Analog (Headphones) stereo
- <br />$ speaker-test -Dplug:spdif -c2      # Didital (SPDIF) stereo
- <br />$ speaker-test -surround71:HDMI -c 8 # 7.1
-</div>
-<!--l. 460--><p class="nopar" >
-</p><!--l. 464--><p class="noindent" >
+   </div><hr class="endfigure" />
+<!--l. 23--><p class="indent" >   ALSA is a software <a 
+href="https://docs.kernel.org/sound/kernel-api/index.html" >framework</a> and part of the Linux kernel &#x0028;see Fig.&#x00A0;<a 
+href="#x1-2r1">1<!--tex4ht:ref: fig:stack --></a>&#x0029;, as a set
+of <a 
+href="https://wiki.archlinux.org/title/Kernel_module" >modules</a>, that provides an application programming interface &#x0028;API&#x0029;, in <a 
+href="https://en.wikipedia.org/wiki/C_(programming_language)" >C</a>, for
+sound device drivers&#x00A0;<span class="cite">&#x005B;<a 
+href="#Xphillips2005user">1</a>&#x005D;</span>. For example, to show the modules related with ALSA
+currently loaded, run: </p><!--l. 31-->
+   <div class="lstlisting" id="listing-1"><span class="label"><a 
+ id="x1-4r1"></a></span><span 
+class="ectt-1000">lsmod</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">|</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">grep</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="tctt-1000">&#x0027;</span><span 
+class="ectt-1000">^</span><span 
+class="ectt-1000">snd</span><span 
+class="tctt-1000">&#x0027;</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">|</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">column</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">t</span></div>
+   
+<!--l. 35--><p class="indent" >   Let&#x2019;s see some of the most basic tools shipped with ALSA.
 </p>
-   <h3 class="sectionHead"><span class="titlemark">1.15   </span> <a 
- id="x1-170001.15"></a>Sampling parameters</h3>
-<!--l. 467--><p class="noindent" >
-     </p><ol  class="enumerate1" >
-     <li 
-  class="enumerate" id="x1-17002x1">Sample rate: number of audio samples per second.
-     </li>
-     <li 
-  class="enumerate" id="x1-17004x2">Sample format: signed, unsigned, bit/sample, etc.
-     </li>
-     <li 
-  class="enumerate" id="x1-17006x3">Number of channels and data layout: refers to the number of channels and
-     the samples interleaving.
-     </li>
-     <li 
-  class="enumerate" id="x1-17008x4">Buﬀer size: This determines how large the hardware buﬀer is. It is related
-     with the latency.</li></ol>
-<!--l. 478--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">1   </span> <a 
+ id="x1-10001"></a><span 
+class="ectt-1000">amixer </span>and <span 
+class="ectt-1000">alsamixer</span></h3>
+<!--l. 38--><p class="noindent" ><a 
+href="https://linux.die.net/man/1/amixer" ><span 
+class="ectt-1000">amixer</span></a> &#x0028;through the command line&#x0029; and <a 
+href="https://en.wikipedia.org/wiki/Alsamixer" ><span 
+class="ectt-1000">alsamixer</span></a> &#x0028;using also the command
+line but being ncurses-based&#x0029; can be used to control the gain of the audio
+inputs and outputs. For example, to run <span 
+class="ectt-1000">alsamixer</span>, in your terminal write:
+</p><!--l. 44-->
+   <div class="lstlisting" id="listing-2"><span class="label"><a 
+ id="x1-1001r1"></a></span><span 
+class="ectt-1000">alsamixer</span></div>
+   
+<!--l. 48--><p class="noindent" >
 </p>
-   <h3 class="sectionHead"><span class="titlemark">1.16   </span> <a 
- id="x1-180001.16"></a>Capture limits</h3>
+   <h3 class="sectionHead"><span class="titlemark">2   </span> <a 
+ id="x1-20002"></a><span 
+class="ectt-1000">arecord</span></h3>
+<!--l. 49--><p class="noindent" ><a 
+href="https://linux.die.net/man/1/arecord" ><span 
+class="ectt-1000">arecord</span></a> runs on ALSA to capture <a 
+href="https://en.wikipedia.org/wiki/Pulse-code_modulation" >PCM &#x0028;Pulse Code Modulation&#x0029;</a> &#x0028;by default, using
+the <a 
+href="https://en.wikipedia.org/wiki/WAV" >WAV</a> audio format&#x0029; audio data, and provides information about the hardware,
+and also, about the audio servers. Some examples of use are:
+</p>
      <ul class="itemize1">
-     <li class="itemize">Emulated:
+     <li class="itemize">
+     <!--l. 59--><p class="noindent" >List the physical audio <a 
+href="https://en.wikipedia.org/wiki/Analog-to-digital_converter" >ADC</a>&#x0028;s&#x0029;: </p><!--l. 61-->
+     <div class="lstlisting" id="listing-3"><span class="label"><a 
+ id="x1-2001r1"></a></span><span 
+class="ectt-1000">arecord</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">l</span></div>
+     
+     </li>
+     <li class="itemize">
+     <!--l. 65--><p class="noindent" >Show information about the ADC&#x0028;s&#x0029; capabilities &#x0028;if <a 
+href="https://www.freedesktop.org/wiki/Software/PulseAudio/" >PulseAudio</a> is not running,
+     remove <span 
+class="ectt-1000">pasuspender &#x2013;</span>&#x0029;: </p><!--l. 68-->
+     <div class="lstlisting" id="listing-4"><span class="label"><a 
+ id="x1-2002r1"></a></span><span 
+class="ectt-1000">pasuspender</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">--</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">arecord</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">D</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">hw</span><span 
+class="ectt-1000">:0,0</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">--</span><span 
+class="ectt-1000">dump</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">hw</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">params</span></div>
+     
                                                                   
 
                                                                   
-     <div class="verbatim" id="verbatim-14">
-     $ arecord --dump-hw-params &#x003E; /dev/null
-      <br />Recording WAVE &#x2019;stdin&#x2019; : Unsigned 8 bit, Rate 8000 Hz, Mono
-      <br />HW Params of device &#x0022;default&#x0022;: # &#x003C;- Usually Pulseaudio
-      <br />--------------------
-      <br />ACCESS:  RW_INTERLEAVED
-      <br />FORMAT:  U8 S16_LE S16_BE S32_LE S32_BE FLOAT_LE FLOAT_BE MU_LAW A_LAW
-      <br />SUBFORMAT:  STD
-      <br />SAMPLE_BITS: [8 32]
-      <br />FRAME_BITS: [8 1024]
-      <br />CHANNELS: [1 32]
-      <br />RATE: [1 192000]
-      <br />PERIOD_TIME: (5 4294967295)
-      <br />PERIOD_SIZE: [1 1398102)
-      <br />PERIOD_BYTES: [128 1398102)
-      <br />PERIODS: [3 1024]
-      <br />BUFFER_TIME: (15 4294967295]
-      <br />BUFFER_SIZE: [3 4194304]
-      <br />BUFFER_BYTES: [384 4194304]
-      <br />TICK_TIME: ALL
-      <br />--------------------
-      <br />&#x0022;Push &#x003C;CTRL&#x003E; + &#x003C;C&#x003E;&#x0022;
-</div>
-     <!--l. 505--><p class="nopar" >
+     </li>
+     <li class="itemize">
+     <!--l. 72--><p class="noindent" >Idem, but using the default audio server &#x0028;usually, PulseAudio&#x0029;: </p><!--l. 73-->
+     <div class="lstlisting" id="listing-5"><span class="label"><a 
+ id="x1-2003r1"></a></span><span 
+class="ectt-1000">arecord</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">--</span><span 
+class="ectt-1000">dump</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">hw</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">params</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">&#x003E;</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">/</span><span 
+class="ectt-1000">dev</span><span 
+class="ectt-1000">/</span><span 
+class="ectt-1000">null</span></div>
+     
+     <!--l. 76--><p class="noindent" >Usually, the software capabilities are higher than the hardware ones.
      </p></li>
-     <li class="itemize">Real:
-                                                                  
-
-                                                                  
-     <div class="verbatim" id="verbatim-15">
-     $ arecord -D hw:0,0 --dump-hw-params
-      <br />Recording WAVE &#x2019;stdin&#x2019; : Unsigned 8 bit, Rate 8000 Hz, Mono
-      <br />HW Params of device &#x0022;hw:0,0&#x0022;:
-      <br />--------------------
-      <br />ACCESS:  MMAP_INTERLEAVED RW_INTERLEAVED
-      <br />FORMAT:  S16_LE S32_LE
-      <br />SUBFORMAT:  STD
-      <br />SAMPLE_BITS: [16 32]
-      <br />FRAME_BITS: [32 64]
-      <br />CHANNELS: 2
-      <br />RATE: [44100 192000]
-      <br />PERIOD_TIME: (83 185760)
-      <br />PERIOD_SIZE: [16 8192]
-      <br />PERIOD_BYTES: [128 65536]
-      <br />PERIODS: [2 32]
-      <br />BUFFER_TIME: (166 371520)
-      <br />BUFFER_SIZE: [32 16384]
-      <br />BUFFER_BYTES: [128 65536]
-      <br />TICK_TIME: ALL
-      <br />--------------------
-      <br />arecord: set_params:1233: Sample format non available
-      <br />Available formats:
-      <br />- S16_LE
-      <br />- S32_LE
-</div>
-     <!--l. 533--><p class="nopar" >
-</p>
+     <li class="itemize">
+     <!--l. 78--><p class="noindent" >List the virtual ADC&#x0028;s&#x0029; &#x0028;<a 
+href="https://alsa.opensrc.org/Pcm-device" >PCM</a> outputs&#x0029;: </p><!--l. 80-->
+     <div class="lstlisting" id="listing-6"><span class="label"><a 
+ id="x1-2004r1"></a></span><span 
+class="ectt-1000">arecord</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">L</span></div>
+     
+     </li>
+     <li class="itemize">
+     <!--l. 84--><p class="noindent" >Record raw &#x0028;without header&#x0029; audio in <a 
+href="https://en.wikipedia.org/wiki/Compact_Disc_Digital_Audio#Audio_format" >CD audio format</a>: </p><!--l. 87-->
+     <div class="lstlisting" id="listing-7"><span class="label"><a 
+ id="x1-2005r1"></a></span><span 
+class="ectt-1000">arecord</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">t</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">raw</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">f</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">cd</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">&#x003E;</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">signed_int16_bits__little_endian__44100_frames_per_second__2_samples_per_frame</span><span 
+class="ectt-1000">.</span><span 
+class="ectt-1000">raw</span></div>
+     
      </li></ul>
-<!--l. 539--><p class="noindent" >
+<!--l. 93--><p class="noindent" >
 </p>
-   <h3 class="sectionHead"><span class="titlemark">1.17   </span> <a 
- id="x1-190001.17"></a>Capture and playback PCM data (basic example)</h3>
+   <h3 class="sectionHead"><span class="titlemark">3   </span> <a 
+ id="x1-30003"></a><span 
+class="ectt-1000">aplay</span></h3>
+<!--l. 94--><p class="noindent" ><a 
+href="https://linux.die.net/man/1/aplay" ><span 
+class="ectt-1000">aplay</span></a> is the companion PCM player of <span 
+class="ectt-1000">arecord</span>. The playing capabilities used to be
+exactly the same than the provides by <span 
+class="ectt-1000">arecord</span>.
+</p>
+     <ul class="itemize1">
+     <li class="itemize">
+     <!--l. 100--><p class="noindent" >List the physical audio <a 
+href="https://en.wikipedia.org/wiki/Digital-to-analog_converter" >DAC</a>&#x0028;s&#x0029;: </p><!--l. 102-->
+     <div class="lstlisting" id="listing-8"><span class="label"><a 
+ id="x1-3001r1"></a></span><span 
+class="ectt-1000">aplay</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">l</span></div>
+     
+     </li>
+     <li class="itemize">
+     <!--l. 106--><p class="noindent" >Idem, but listing the virtual DACs &#x0028;PCM outputs&#x0029;: </p><!--l. 107-->
+     <div class="lstlisting" id="listing-9"><span class="label"><a 
+ id="x1-3002r1"></a></span><span 
+class="ectt-1000">aplay</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">L</span></div>
+     
                                                                   
 
                                                                   
-   <div class="verbatim" id="verbatim-16">
-$ arecord -f cd | aplay -f cd
- <br />Recording WAVE &#x2019;stdin&#x2019; : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
- <br />Playing WAVE &#x2019;stdin&#x2019; : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
- <br />underrun!!! (at least 209,120 ms long)
- <br />^CAborted by signal Interrupt...
- <br />aplay: pcm_write:1939: write error: Interrupted system call
- <br />Aborted by signal Interrupt...
-</div>
-<!--l. 550--><p class="nopar" >
-                                                                  
-
-                                                                  
+     </li>
+     <li class="itemize">
+     <!--l. 111--><p class="noindent" >&#x0028;Recording and&#x0029; Playing directly through ALSA, using the physical DAC and
+     DAC: </p><!--l. 112-->
+     <div class="lstlisting" id="listing-10"><span class="label"><a 
+ id="x1-3003r1"></a></span><span 
+class="ectt-1000">arecord</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">t</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">raw</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">f</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">cd</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">|</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">aplay</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">t</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">raw</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">f</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">cd</span><span 
+class="ectt-1000">&#x00A0;</span><br /> 
+<span class="label"><a 
+ id="x1-3004r2"></a></span><span 
+class="ectt-1000">pasuspender</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">--</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">arecord</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">D</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">hw</span><span 
+class="ectt-1000">:0,0</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">t</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">raw</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">f</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">cd</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">|</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">pasuspender</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">--</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">aplay</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">D</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">hw</span><span 
+class="ectt-1000">:0,0</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">t</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">raw</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">f</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">cd</span></div>
+     
+     </li>
+     <li class="itemize">
+     <!--l. 117--><p class="noindent" >&#x0028;Recording and&#x0029; Playing throught the default sound server &#x0028;usually
+     PulseAudio&#x0029;, using the virtual DAC and DAC: </p><!--l. 118-->
+     <div class="lstlisting" id="listing-11"><span class="label"><a 
+ id="x1-3005r1"></a></span><span 
+class="ectt-1000">arecord</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">t</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">raw</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">f</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">cd</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">|</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">aplay</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">t</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">raw</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">f</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">cd</span></div>
+     
+     </li></ul>
+<!--l. 123--><p class="noindent" >
 </p>
-   <h2 class="chapterHead"><span class="titlemark">Chapter 2</span><br /><a 
- id="x1-200002"></a>Practice</h2>
-   <h3 class="sectionHead"><span class="titlemark">2.1   </span> <a 
- id="x1-210002.1"></a>Exercise 1: Sample a 8-bit PCM ﬁle</h3>
+   <h3 class="sectionHead"><span class="titlemark">4   </span> <a 
+ id="x1-40004"></a><span 
+class="ectt-1000">speaker-test</span></h3>
+<!--l. 124--><p class="noindent" ><a 
+href="https://linux.die.net/man/1/speaker-test" ><span 
+class="ectt-1000">speaker-test</span></a> allows to generate &#x0028;by default&#x0029; <a 
+href="https://en.wikipedia.org/wiki/Pink_noise" >pink noise</a> or a pure tone through the
+audio outputs. Examples: </p><!--l. 125-->
+   <div class="lstlisting" id="listing-12"><span class="label"><a 
+ id="x1-4001r1"></a></span><span 
+class="ectt-1000">speaker</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">test</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">#</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">Analog</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x0028;</span><span 
+class="ecit-1000">copper</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">or</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">Bluetooth</span><span 
+class="ecit-1000">,</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">if</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">available</span><span 
+class="ecit-1000">&#x0029;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">mono</span><span 
+class="ectt-1000">&#x00A0;</span><br /> 
+<span class="label"><a 
+ id="x1-4002r2"></a></span><span 
+class="ectt-1000">speaker</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">test</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">c</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">2</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">#</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">Analog</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x0028;</span><span 
+class="ecit-1000">copper</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">of</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">Bluethooh</span><span 
+class="ecit-1000">,</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">if</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">available</span><span 
+class="ecit-1000">&#x0029;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">stereo</span><span 
+class="ectt-1000">&#x00A0;</span><br /> 
+<span class="label"><a 
+ id="x1-4003r3"></a></span><span 
+class="ectt-1000">speaker</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">test</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">Dplug</span><span 
+class="ectt-1000">:</span><span 
+class="ectt-1000">spdif</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">c2</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">#</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">Digital</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x0028;</span><span 
+class="ecit-1000">SPDIF</span><span 
+class="ecit-1000">&#x0029;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">stereo</span><span 
+class="ecit-1000">,</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">if</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">available</span><span 
+class="ectt-1000">&#x00A0;</span><br /> 
+<span class="label"><a 
+ id="x1-4004r4"></a></span><span 
+class="ectt-1000">speaker</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">test</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">-</span><span 
+class="ectt-1000">c</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ectt-1000">8</span><span 
+class="ectt-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">#</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">Surround</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">&#x0028;</span><span 
+class="ecit-1000">usually</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">through</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">HDMI</span><span 
+class="ecit-1000">&#x0029;</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">7.1,</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">if</span><span 
+class="ecit-1000">&#x00A0;</span><span 
+class="ecit-1000">available</span></div>
+   
+<!--l. 132--><p class="noindent" >
+</p>
+   <h3 class="sectionHead"><span class="titlemark">5   </span> <a 
+ id="x1-50005"></a>Resources</h3>
+   <div class="thebibliography">
+   <p class="bibitem" ><span class="biblabel">
+ &#x005B;1&#x005D;<span class="bibsp">&#x00A0;&#x00A0;&#x00A0;</span></span><a 
+ id="Xphillips2005user"></a>Dave Phillips.  A User&#x2019;s Guide to ALSA.  <span 
+class="ecti-1000">Linux Journal</span>, 2005&#x0028;136&#x0029;:3,
+   2005.
+</p>
+   </div>
+<a 
+ id="Q1-1-7"></a>
     
-</body> 
-</html>
+</body></html> 
+
                                                                   
 
 

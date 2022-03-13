@@ -1,0 +1,134 @@
+\title{Advanced Linux Sound Architecture (ALSA)}
+
+\maketitle
+
+\begin{figure}
+  \begin{center}
+    \begin{tabular}{|c|c|}
+      \hline
+      \multicolumn{2}{c}{\href{https://en.wikipedia.org/wiki/List\_of\_Linux\_audio\_software}{Linux Audio Applications}} \\
+      \hline
+      \href{https://jackaudio.org/}{JACK} & \href{https://www.freedesktop.org/wiki/Software/PulseAudio/}{Pulse Audio} \\
+      \hline
+      \multicolumn{2}{c}{\href{https://www.alsa-project.org}{ALSA}} \\
+      \hline
+      \multicolumn{2}{c}{\href{https://www.alsa-project.org/wiki/Matrix:Main}{Sound hardware}} \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption{The Linux Audio (problably partial) Stack.}
+  \label{fig:stack}
+\end{figure}
+
+ALSA is a software
+\href{https://docs.kernel.org/sound/kernel-api/index.html}{framework}
+and part of the Linux kernel (see Fig.~\ref{fig:stack}), as a set of
+\href{https://wiki.archlinux.org/title/Kernel_module}{modules}, that
+provides an application programming interface (API), in
+\href{https://en.wikipedia.org/wiki/C_(programming_language)}{C}, for
+sound device drivers~\cite{phillips2005user}. For example, to show the
+modules related with ALSA currently loaded, run:
+\begin{lstlisting}[language=Bash]
+lsmod | grep '^snd' | column -t
+\end{lstlisting}
+
+Let's see some of the most basic tools shipped with ALSA.
+
+\section{\texttt{amixer} and \texttt{alsamixer}}
+\texttt{\href{https://linux.die.net/man/1/amixer}{amixer}} (through
+the command line) and
+\texttt{\href{https://en.wikipedia.org/wiki/Alsamixer}{alsamixer}}
+(using also the command line but being ncurses-based) can be used to
+control the gain of the audio inputs and outputs. For example, to run
+\texttt{alsamixer}, in your terminal write:
+\begin{lstlisting}[language=Bash]
+alsamixer
+\end{lstlisting}
+
+\section{\texttt{arecord}}
+\texttt{\href{https://linux.die.net/man/1/arecord}{arecord}} runs on
+ALSA to capture
+\href{https://en.wikipedia.org/wiki/Pulse-code_modulation}{PCM (Pulse
+  Code Modulation)} (by default, using the
+\href{https://en.wikipedia.org/wiki/WAV}{WAV} audio format) audio
+data, and provides information about the hardware, and also, about the
+audio servers. Some examples of use are:
+
+\begin{itemize}
+
+\item List the physical audio
+  \href{https://en.wikipedia.org/wiki/Analog-to-digital_converter}{ADC}(s):
+\begin{lstlisting}[language=Bash]
+arecord -l      
+\end{lstlisting}
+
+\item Show information about the ADC(s) capabilities (if
+  \href{https://www.freedesktop.org/wiki/Software/PulseAudio/}{PulseAudio}
+  is not running, remove \texttt{pasuspender --}):
+\begin{lstlisting}[language=Bash]
+pasuspender -- arecord -D hw:0,0 --dump-hw-params
+\end{lstlisting}
+
+\item Idem, but using the default audio server (usually, PulseAudio):
+\begin{lstlisting}[language=Bash]
+arecord --dump-hw-params > /dev/null
+\end{lstlisting}
+Usually, the software capabilities are higher than the hardware ones.
+
+\item List the virtual ADC(s)
+  (\href{https://alsa.opensrc.org/Pcm-device}{PCM} outputs):
+\begin{lstlisting}[language=Bash]
+arecord -L
+\end{lstlisting}
+
+\item Record raw (without header) audio in
+  \href{https://en.wikipedia.org/wiki/Compact_Disc_Digital_Audio#Audio_format}{CD
+    audio format}:
+\begin{lstlisting}[language=Bash]
+arecord -t raw -f cd > signed_int16_bits__little_endian__44100_frames_per_second__2_samples_per_frame.raw
+\end{lstlisting}
+
+\end{itemize}
+
+\section{\texttt{aplay}}
+\texttt{\href{https://linux.die.net/man/1/aplay}{aplay}} is the
+companion PCM player of \texttt{arecord}. The playing capabilities
+used to be exactly the same than the provides by \texttt{arecord}.
+
+\begin{itemize}
+
+\item List the physical audio
+  \href{https://en.wikipedia.org/wiki/Digital-to-analog_converter}{DAC}(s):
+\begin{lstlisting}[language=Bash]
+aplay -l      
+\end{lstlisting}
+
+\item Idem, but listing the virtual DACs (PCM outputs):
+\begin{lstlisting}[language=Bash]
+aplay -L
+\end{lstlisting}
+
+\item (Recording and) Playing directly through ALSA, using the physical DAC and DAC:
+\begin{lstlisting}[language=Bash]
+arecord -t raw -f cd | aplay -t raw -f cd
+pasuspender -- arecord -D hw:0,0 -t raw -f cd | pasuspender -- aplay -D hw:0,0 -t raw -f cd
+\end{lstlisting}
+
+\item (Recording and) Playing throught the default sound server (usually PulseAudio), using the virtual DAC and DAC:
+\begin{lstlisting}[language=Bash]
+arecord -t raw -f cd | aplay -t raw -f cd
+\end{lstlisting}
+\end{itemize}
+
+\section{\texttt{speaker-test}}
+\texttt{\href{https://linux.die.net/man/1/speaker-test}{speaker-test}} allows to generate (by default) \href{https://en.wikipedia.org/wiki/Pink_noise}{pink noise} or a pure tone through the audio outputs. Examples:
+\begin{lstlisting}[language=Bash]
+speaker-test                       # Analog (copper or Bluetooth, if available) mono
+speaker-test -c 2                  # Analog (copper of Bluethooh, if available) stereo
+speaker-test -Dplug:spdif -c2      # Digital (SPDIF) stereo, if available
+speaker-test -c 8                  # Surround (usually through HDMI) 7.1, if available
+\end{lstlisting}
+
+\section{Resources}
+
+\bibliography{python,sound}
